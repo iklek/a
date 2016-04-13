@@ -1,0 +1,187 @@
+#ifndef DRZEWOIMPLEMENTACJA_H_INCLUDED
+#define DRZEWOIMPLEMENTACJA_H_INCLUDED
+
+//Funkcja dodaj¹ca do drzewa wartoœci podane przez u¿ytkownika
+
+template < class par >
+void Drzewo < par >::dodaj( par dana )
+{
+    Wezel * temp = new Wezel;
+    Wezel * rodzic = NULL;
+    temp->dana_ = dana;
+    temp->lewy = NULL;
+    temp->prawy = NULL;
+    temp->rodzic = NULL;
+    
+    
+    if( pusty() )
+         korzen = temp;
+    else
+    {
+        Wezel * nowy;
+        nowy = korzen;
+        
+        while( nowy != NULL )
+        {
+            rodzic = nowy;
+            if( temp->dana_ < nowy->dana_ )
+                 nowy = nowy->lewy;
+            else
+                 nowy = nowy->prawy;
+            
+        }
+        if( temp->dana_ < rodzic->dana_ )
+             rodzic->lewy = temp;
+        else
+             rodzic->prawy = temp;
+        
+        temp->rodzic = rodzic;
+    }
+    ++rozmiar_;
+}
+
+//Funkcja szukajaca wartoœci w drzewie
+
+template < class par >
+typename Drzewo < par >::iterator Drzewo < par >::znajdz( par dana )
+{
+    bool znaleziona = false;
+    iterator nowy( korzen );
+    iterator rodzic( korzen->rodzic );
+    
+    while( nowy.wezel != NULL )
+    {
+        if( nowy.wezel->dana_ == dana )
+        {
+            znaleziona = true;
+            break;
+        }
+        else
+        {
+            rodzic.wezel = nowy.wezel;
+            if( dana < nowy.wezel->dana_ )
+                 nowy.wezel = nowy.wezel->lewy;
+            else
+                 nowy.wezel = nowy.wezel->prawy;
+            
+        }
+    }
+    if( !znaleziona )
+    {
+        iterator it;
+        return it = this->end();
+    }
+    iterator it( nowy );
+    return it;
+}
+
+//Funkcja zwracaj¹ca prawdê, gdy da siê usun¹æ wartosæ z drzewa i nieprawdê w przeciwnym razie
+
+template < class par >
+bool Drzewo < par >::usun( par dana )
+{
+    iterator it = znajdz( dana );
+    return usun( it );
+}
+
+//Funkcja zajmuj¹ca siê usuwaniem wartoœci z drzewa.
+
+template < class par >
+bool Drzewo < par >::usun( iterator it )
+{
+    Wezel * temp;
+    if( it.wezel->lewy == NULL )
+    {
+        temp = it.wezel;
+        if( it.wezel->rodzic )
+        {
+            if( it.wezel == it.wezel->rodzic->prawy )
+                 it.wezel->rodzic->prawy = it.wezel->prawy;
+            else
+                 it.wezel->rodzic->lewy = it.wezel->prawy;
+            
+        }
+        else
+        {
+            if( it.wezel->prawy )
+                 korzen = it.wezel->prawy;
+            else
+            {
+                delete korzen;
+                korzen = NULL;
+                return true;
+            }
+            if( korzen->lewy != NULL )
+                 korzen->lewy->rodzic = korzen;
+            
+            if( korzen->prawy != NULL )
+                 korzen->prawy->rodzic = korzen;
+            
+            korzen->rodzic = NULL;
+        }
+        temp->lewy = NULL;
+        temp->prawy = NULL;
+        delete temp;
+    }
+    else
+    if( it.wezel->prawy == NULL )
+    {
+        temp = it.wezel;
+        if( it.wezel->rodzic )
+        {
+            if( it.wezel == it.wezel->rodzic->prawy )
+                 it.wezel->rodzic->prawy = it.wezel->lewy;
+            else
+                 it.wezel->rodzic->lewy = it.wezel->lewy;
+            
+        }
+        else
+        {
+            korzen = it.wezel->lewy;
+            if( korzen->lewy != NULL )
+                 korzen->lewy->rodzic = korzen;
+            
+            if( korzen->prawy != NULL )
+                 korzen->prawy->rodzic = korzen;
+            
+            korzen->rodzic = NULL;
+        }
+        temp->lewy = NULL;
+        temp->prawy = NULL;
+        delete temp;
+    }
+    
+    return true;
+}
+
+//Zwraca iterator wskazuj¹cy na pierwszy element wektora (wartoœæ najbardziej na lewo)
+
+template < class par >
+typename Drzewo < par >::iterator Drzewo < par >::begin()
+{
+    Wezel * pt;
+    if( korzen )
+    {
+        pt = korzen;
+        while( pt->lewy )
+             pt = pt->lewy;
+        
+    }
+    else
+         pt = NULL;
+    
+    iterator it( pt );
+    return it;
+}
+
+//Zwraca iterator zawieraj¹cy wskaŸnik na null
+
+template < class par >
+typename Drzewo < par >::iterator Drzewo < par >::end()
+{
+    Wezel * pt( NULL );
+    iterator it( pt );
+    return it;
+}
+
+#endif // DRZEWOIMPLEMENTACJA_H_INCLUDED
