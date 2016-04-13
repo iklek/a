@@ -1,0 +1,39 @@
+#ifndef ITERATOR_H_INCLUDED
+#define ITERATOR_H_INCLUDED
+
+template < class par >
+typename Drzewo < par >::iterator & Drzewo < par >::iterator::operator ++()
+{
+    if( wezel->prawy )
+    {
+        wezel = wezel->prawy;
+        while( wezel->lewy )
+             wezel = wezel->lewy;
+        
+    }
+    else
+    {
+        Wezel * temp = wezel->rodzic;
+        if( temp )
+        {
+            while( temp->prawy == wezel )
+            {
+                wezel = temp;
+                temp = temp->rodzic;
+                if( !temp )
+                     break;
+                
+            }
+            if( wezel->prawy != temp )
+                 wezel = temp;
+            
+        }
+        else wezel = temp;
+        
+    }
+    
+    return * this;
+}
+
+
+#endif // ITERATOR_H_INCLUDED
