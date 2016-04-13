@@ -1,0 +1,65 @@
+#include <iostream>
+#include <algorithm>
+#include "Drzewo.h"
+
+using namespace std;
+void print( int i );
+
+int main()
+{
+    int wartosc;
+    Drzewo < int > tree;
+    
+    cout << "MENU:" << endl;
+    cout << "1. Dodaj wartosc" << endl;
+    cout << "2. Znajdz wartosc" << endl;
+    cout << "3. Usun wartosc" << endl;
+    cout << "Jesli chcesz skonczyc program nacisnij: 0" << endl << endl;
+    
+    while( cout << "Podaj swoj wybor: ", cin >> wartosc && wartosc != 0 )
+    {
+        
+        if( wartosc == 0 || wartosc == 1 || wartosc == 2 || wartosc == 3 )
+        {
+            switch( wartosc )
+            {
+            case 1:
+                cout << "Podaj wartosc, ktora chcesz dodac: ";
+                cin >> wartosc;
+                tree.dodaj( wartosc );
+                break;
+            case 2:
+                cout << "Podaj wartosc, ktora chcesz znalezc: ";
+                cin >> wartosc;
+                if( tree.znajdz( wartosc ) != tree.end() )
+                     cout << "Wartosci jest w drzewie" << endl;
+                else
+                     cout << "Wartosci nie ma w drzewie" << endl;
+                
+                break;
+            case 3:
+                cout << "Podaj wartosc, ktora chcesz usunac: ";
+                cin >> wartosc;
+                tree.usun( wartosc );
+                break;
+            }
+            
+            cout << endl;
+            cout << "Drzewo: ";
+            for_each( tree.begin(), tree.end(), print ); //http://www.cplusplus.com/reference/algorithm/for_each/
+            cout << endl << endl;
+        }
+        
+        else
+             cout << "Nie ma takiej opcji." << endl << endl;
+        
+    }
+    
+    return 0;
+}
+
+
+void print( int i )
+{
+    cout << i << ' ';
+}
