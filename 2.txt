@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 //Drzewo BST
 //Marek Rynarzewski
@@ -335,4 +336,343 @@ public function count()
 return $this->size;
 }
 }
+=======
+<?php
+//Drzewo BST
+//Marek Rynarzewski
+//www.algorytm.org
+ 
+ 
+//wczytaj tablice
+//zapenij ze indeksy tablicy zaczynaja sie od 1
+function fixArray(array &$a)
+{
+if (!is_numArr($a) or getFirstKey($a) != 1)
+{
+$a = setFirstKeyAs1($a);
+}
+}
+ 
+//zwraca true, jezeli wszystkie wartosc w tablicy sa liczbami
+function /*boolean*/ is_numArr(array $a)
+{
+foreach ($a as $k => $i)
+{
+if (!is_numeric($k))
+return false;
+}
+return true;
+}
+ 
+//zwraca wartosc pierwszego klucza w tablicy (numer indeksu od ktorego zaczyna sie tablica)
+function /*mixed*/ getFirstKey(array $a)
+{
+foreach ($a as $k => $i)
+{
+return $k;
+}
+}
+ 
+//przerabia tablice tak, by pierwszy indeks by rowny 1
+function /*array*/ setFirstKeyAs1(array $array)
+{
+$r = array();
+foreach ($array as $k => $i)
+{
+if (getFirstKey($array) == $k)
+{
+$r[1] = $i;
+}
+else
+{
+$r[] = $i;
+}
+}
+return $r;
+}
+ 
+//Wezel drzewa BST
+class BSTNode
+{
+public function __construct($value)
+{
+$this->key = $value;
+}
+public $_parent = null;
+public $left = null;
+public $right = null;
+public $key = null;
+public function __toString()
+{
+return (($this->key != null)?((string)$this->key):('NULL'));
+}
+}
+ 
+//Drzewo BST
+class BST implements Countable
+{
+public $root;
+private $size = 0;
+ 
+//Tworzy drzewo BST na podstawie tablicy
+static /*BST*/ function toBST(array $a)
+{
+fixArray($a);
+$bst = new BST;
+$bst->root = new BSTNode($a[1]);
+for ($i = 2; $i <= count($a); $i ++)
+{
+$bst->insert(new BSTNode($a[$i]));
+}
+return $bst;
+}
+ 
+//Przechodz drzwo poprzecznie (in-order)
+public /*void*/ function inOrder(BSTNode $node = null)
+{
+if ($node != null)
+{
+$this->inOrder($node->left);
+echo $node;
+$this->inOrder($node->right);
+}
+}
+ 
+//Przechodz drzwo poprzecznie (in-order) i wywoluje podana funkcje dla kazdego wezla
+public /*mixed*/ function inOrderOwn($function, BSTNode $node = null)
+{
+if ($node != null)
+{
+$this->inOrderOwn($function, $node->left);
+$function($node);
+$this->inOrderOwn($function, $node->right);
+}
+}
+ 
+//Przechodz drzwo wzdluznie (pre-order)
+public /*void*/ function preOrder(BSTNode $node = null)
+{
+if ($node != null)
+{
+echo $node;
+$this->preOrder($node->left);
+$this->preOrder($node->right);
+}
+}
+ 
+//Przechodz drzwo wzdluznie (pre-order) i wywoluje podana funkcje dla kazdego wezla
+public /*mixed*/ function preOrderOwn($function, BSTNode $node = null)
+{
+if ($node != null)
+{
+$function($node);
+$this->preOrderOwn($function, $node->left);
+$this->preOrderOwn($function, $node->right);
+}
+}
+ 
+//Przechodz drzwo wstecznie (post-order)
+public /*void*/ function postOrder(BSTNode $node = null)
+{
+if ($node != null)
+{
+$this->postOrder($node->left);
+$this->postOrder($node->right);
+echo $node;
+}
+}
+ 
+//Przechodz drzwo wstecznie (post-order) i wywoluje podana funkcje dla kazdego wezla
+public /*void*/ function postOrderOwn($function, BSTNode $node = null)
+{
+if ($node != null)
+{
+$this->postOrderOwn($function, $node->left);
+$this->postOrderOwn($function, $node->right);
+$function($node);
+}
+}
+ 
+//Przeszukuje drzewo rekursywnie, w celu znalezienie podanej wartosci
+public function recursiveSearch($value, BSTNode $node = null)
+{
+echo 'value = '.$value.'<br/>node = '.$node.'<br/>';
+if (($node == null) or ($node->key == $value))
+{
+echo 'node == null or '.$node->key.' == '.$value.'<br/>';
+return $node;
+}
+else
+{
+echo 'node != null or '.$node->key.' != '.$value.'<br/>';
+if ($value < $node->key)
+{
+echo $value.' < '.$node->key.'<br/>';
+return $this->recursiveSearch($value, $node->left);
+}
+else
+{
+echo $value.' >= '.$node->key.'<br/>';
+return $this->recursiveSearch($value, $node->right);
+}
+}
+}
+ 
+//Przeszukuje drzewo iteracyjnie, w celu znalezienie podanej wartosci
+public function iterativeSearch($value, BSTNode $node = null)
+{
+while (($node != null) and ($value != $node->key))
+{
+if ($value < $node->key)
+{
+$node = $node->left;
+}
+else
+{
+$node = $node->right;
+}
+}
+return $node;
+}
+ 
+//Zwraca warosc maksymalna w drzewie BST
+public function maximum(BSTNode $node = null)
+{
+while ($node->left != null)
+{
+$node = $node->left;
+}
+return $node;
+}
+ 
+//Zwraca warosc minimalna w drzewie BST
+public function minimum(BSTNode $node = null)
+{
+while ($node->right != null)
+{
+$node = $node->right;
+}
+return $node;
+}
+ 
+public function successor(BSTNode $node = null)
+{
+if ($node->right != null)
+{
+return $this->minimum($node);
+}
+$y = $node->_parent;
+while (($y != null) and ($node == $y->right))
+{
+$node = $y;
+$y = $y->right;
+}
+return $y;
+}
+ 
+public function predecessor(BSTNode $node = null)
+{
+if ($node->left != null)
+{
+return $this->maximum($node);
+}
+$x = null;
+do
+{
+$x = $node;
+$y = $y->_parent;
+}
+while (($node != null) && ($node->right != $x));
+return $y;
+}
+ 
+//Wstawia wartosc do drzewa BST
+public function insert(BSTNode $node = null)
+{
+$y = null;
+$x = $this->root;
+while ($x != null)
+{
+$y = $x;
+if ($node->key < $x->key)
+{
+$x = $x->left;
+}
+else
+{
+$x = $x->right;
+}
+}
+$node->_parent = $y;
+if ($y == null)
+{
+$this->root = $node;
+}
+else
+{
+if ($node->key < $y->key)
+{
+$y->left = $node;
+}
+else
+{
+$y->right = $node;
+}
+}
+$this->size++;
+}
+ 
+//Usuwa wartosc z drzewa BST
+public function delete(BSTNode $node = null)
+{
+if ($node->left == null)
+{
+$y = $node;
+}
+else
+{
+$y = $this->successor($node);
+}
+if ($y->left != null)
+{
+$x = $y->left;
+}
+else
+{
+$x = $y->right;
+}
+if ($x != null)
+{
+$x->_parent = $y->_parent;
+}
+if ($y->_parent == null)
+{
+$this->root = $x;
+}
+else
+{
+if ($y == $y->_parent->left)
+{
+$y->_parent->left = $x;
+}
+else
+{
+$y->_parent->right = $x;
+}
+}
+if ($y != $node)
+{
+$node->key = $y->key;
+}
+unset($node);
+$this->size--;
+}
+ 
+//Zwraca liczbe elementow w drzewie BST
+public function count()
+{
+return $this->size;
+}
+}
+>>>>>>> 1b4740401eaac16e6b12e1a27fea5e2ab10aee6c
 ?>

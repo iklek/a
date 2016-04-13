@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifndef DRZEWO_H_INCLUDED
 #define DRZEWO_H_INCLUDED
 
@@ -143,4 +144,151 @@ private:
 #include "Iterator.h"
 
 
+=======
+#ifndef DRZEWO_H_INCLUDED
+#define DRZEWO_H_INCLUDED
+
+#include <iterator>
+
+using namespace std;
+
+template < class par >
+class Drzewo
+{
+public:
+    Drzewo()
+        : korzen( NULL )
+         , rozmiar_( 0 )
+    { }
+    ~Drzewo()
+    {
+        delete korzen;
+    }
+    
+    struct Wezel
+    {
+        par dana_;
+        Wezel * rodzic;
+        Wezel * lewy;
+        Wezel * prawy;
+        Wezel( par dana )
+            : lewy( NULL )
+             , prawy( NULL )
+        { }
+        Wezel()
+            : lewy( NULL )
+             , prawy( NULL )
+        { }
+        ~Wezel()
+        {
+            delete lewy;
+            delete prawy;
+        }
+    };
+    
+    class iterator;
+    class const_iterator;
+    
+    //http://qt-project.org/doc/qt-4.8/qmap-const-iterator.html#const_iterator
+    
+    class iterator
+        : public std::iterator < std::input_iterator_tag, Wezel >
+    {
+    public:
+        Wezel * wezel;
+        friend class const_iterator;
+        iterator()
+            : wezel( NULL )
+        { }
+        iterator( Wezel * p )
+            : wezel( p )
+        { }
+        iterator( const iterator & inne )
+            : wezel( inne.wezel )
+        { }
+        
+        iterator & operator ++(); //Preinkrementacja operator++(int) - zwraca *this.
+        
+        iterator operator ++( int ) //Postinkrementacja - zwraca wartoœæ *this przed wywo³aniem.
+        {
+            iterator tmp( * this );
+            ++( * this );
+            return tmp;
+        }
+        
+        par & operator *() //Referencja do elementu wskazywanego przez iterator
+        {
+            return wezel->dana_;
+        }
+        
+        bool operator !=( const const_iterator & inne ) const
+        {
+            return wezel != inne.wezel;
+        }
+    };
+    
+    //Zwraca referencjê do sta³ej wartoœci i uniemo¿liwa modyfikacjê wartoœci
+    
+    class const_iterator
+        : public std::iterator < std::input_iterator_tag, Wezel >
+    {
+    public:
+        const Wezel * wezel;
+        const_iterator()
+            : wezel( NULL )
+        { }
+        const_iterator( const Wezel * p )
+            : wezel( p )
+        { }
+        const_iterator( const iterator & inne )
+            : wezel( inne.wezel )
+        { } //konstruktor kopiuj¹cy
+        const_iterator( const const_iterator & inne )
+            : wezel( inne.wezel )
+        { }
+        
+        const const_iterator & operator =( const iterator & inne )
+        {
+            wezel = inne.wezel;
+            return inne;
+        }
+        const par & operator *() const
+        {
+            return *( wezel->dana_ );
+        }
+        
+        bool operator !=( const iterator & inne )
+        {
+            return wezel != inne.wezel;
+        }
+    };
+    
+    iterator znajdz( par );
+    iterator begin();
+    iterator end();
+    void dodaj( par );
+    bool usun( par );
+    bool usun( iterator );
+    int rozmiar()
+    {
+        return rozmiar_;
+    }
+    
+    bool pusty()
+    {
+        return rozmiar_ == 0;
+    }
+    
+    
+private:
+    Wezel * korzen;
+    int rozmiar_;
+    
+};
+
+#include "DrzewoImplementacja.h"
+#include "Iterator.h"
+
+
+>>>>>>> 1b4740401eaac16e6b12e1a27fea5e2ab10aee6c
 #endif // DRZEWO_H_INCLUDED
